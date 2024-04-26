@@ -21,7 +21,6 @@
 =====================================================================
 
 What is Kickstart?
-W
   Kickstart.nvim is *not* a distribution.
 
   Kickstart.nvim is a starting point for your own configuration.
@@ -118,9 +117,17 @@ vim.opt.clipboard = "unnamedplus"
 -- Enable break indent
 vim.opt.breakindent = true
 
+vim.opt.guicursor = ""
+vim.api.nvim_set_keymap("i", "<C-k>", "<C-o>gk", { noremap = true })
+vim.api.nvim_set_keymap("i", "<C-h>", "<Left>", { noremap = true })
+vim.api.nvim_set_keymap("i", "<C-l>", "<Right>", { noremap = true })
+vim.api.nvim_set_keymap("i", "<C-j>", "<C-o>gj", { noremap = true })
+vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 -- Save undo history
 vim.opt.undofile = true
-
+vim.opt.swapfile = false
+vim.opt.backup = false
+vim.opt.undodir = os.getenv("HOME") .. "/vim/undodir" ----- to view the changes made days before
 -- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
@@ -161,6 +168,12 @@ vim.opt.scrolloff = 10
 vim.opt.hlsearch = true
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 vim.keymap.set("i", "jj", "<Esc>")
+
+--NOTE: tmux navigation
+vim.keymap.set("n", "<C-h>", "<cmd> TmuxNavigateLeft<CR>")
+vim.keymap.set("n", "<C-l>", "<cmd> TmuxNavigateRight<CR>")
+vim.keymap.set("n", "<C-j>", "<cmd> TmuxNavigateDown<CR>")
+vim.keymap.set("n", "<C-k>", "<cmd> TmuxNavigateUp<CR>")
 
 -- Diagnostic keymaps
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous [D]iagnostic message" })
@@ -264,28 +277,28 @@ require("lazy").setup({
 	-- after the plugin has been loaded:
 	--  config = function() ... end
 
-	-- { -- Useful plugin to show you pending keybinds.
-	-- 	"folke/which-key.nvim",
-	-- 	event = "VimEnter", -- Sets the loading event to 'VimEnter'
-	-- 	config = function() -- This is the function that runs, AFTER loading
-	-- 		require("which-key").setup()
-	--
-	-- 		-- Document existing key chains
-	-- 		require("which-key").register({
-	-- 			["<leader>c"] = { name = "[C]ode", _ = "which_key_ignore" },
-	-- 			["<leader>d"] = { name = "[D]ocument", _ = "which_key_ignore" },
-	-- 			["<leader>r"] = { name = "[R]ename", _ = "which_key_ignore" },
-	-- 			["<leader>s"] = { name = "[S]earch", _ = "which_key_ignore" },
-	-- 			["<leader>w"] = { name = "[W]orkspace", _ = "which_key_ignore" },
-	-- 			["<leader>t"] = { name = "[T]oggle", _ = "which_key_ignore" },
-	-- 			["<leader>h"] = { name = "Git [H]unk", _ = "which_key_ignore" },
-	-- 		})
-	-- 		-- visual mode
-	-- 		require("which-key").register({
-	-- 			["<leader>h"] = { "Git [H]unk" },
-	-- 		}, { mode = "v" })
-	-- 	end,
-	-- },
+	{ -- Useful plugin to show you pending keybinds.
+		"folke/which-key.nvim",
+		event = "VimEnter", -- Sets the loading event to 'VimEnter'
+		config = function() -- This is the function that runs, AFTER loading
+			require("which-key").setup()
+
+			-- Document existing key chains
+			require("which-key").register({
+				["<leader>c"] = { name = "[C]ode", _ = "which_key_ignore" },
+				["<leader>d"] = { name = "[D]ocument", _ = "which_key_ignore" },
+				["<leader>r"] = { name = "[R]ename", _ = "which_key_ignore" },
+				["<leader>s"] = { name = "[S]earch", _ = "which_key_ignore" },
+				["<leader>w"] = { name = "[W]orkspace", _ = "which_key_ignore" },
+				["<leader>t"] = { name = "[T]oggle", _ = "which_key_ignore" },
+				["<leader>h"] = { name = "Git [H]unk", _ = "which_key_ignore" },
+			})
+			-- visual mode
+			require("which-key").register({
+				["<leader>h"] = { "Git [H]unk" },
+			}, { mode = "v" })
+		end,
+	},
 
 	-- NOTE: Plugins can specify dependencies.
 	--
@@ -561,10 +574,10 @@ require("lazy").setup({
 			--  - settings (table): Override the default settings passed when initializing the server.
 			--        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
 			local servers = {
-				clangd = {},
+				-- clangd = {},
 				ast_grep = {},
 				gopls = {},
-				html = {},
+				-- html = {},
 				jsonls = {},
 				pyright = {},
 				rust_analyzer = {},
@@ -654,7 +667,7 @@ require("lazy").setup({
 				html = { "prettier" },
 				css = { "prettier" },
 				-- Conform can also run multiple formatters sequentially
-				-- python = { "isort", "black" },
+				python = { "isort", "black" },
 				--
 				-- You can use a sub-list to tell conform to run *until* a formatter
 				-- is found.
@@ -870,11 +883,16 @@ require("lazy").setup({
 			--    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
 		end,
 	},
-
+	{
+		"windwp/nvim-autopairs",
+		event = "InsertEnter",
+		config = true,
+		-- use opts = {} for passing setup options
+		-- this is equalent to setup({}) function
+	},
 	-- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
 	-- init.lua. If you want these files, they are in the repository, so you can just download them and
 	-- place them in the correct locations.
-
 	-- NOTE: Next step on your Neovim journey: Add/Configure additional plugins for Kickstart
 	--
 	--  Here are some example plugins that I've included in the Kickstart repository.
@@ -893,6 +911,10 @@ require("lazy").setup({
 	--  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
 	--    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
 	-- { import = 'custom.plugins' },
+	{
+		"christoomey/vim-tmux-navigator",
+		lazy = false,
+	},
 }, {
 	ui = {
 		-- If you are using a Nerd Font: set icons to an empty table which will use the
