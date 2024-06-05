@@ -27,7 +27,6 @@ What is Kickstart?
   Kickstart.nvim is a starting point for your own configuration.
     The goal is that you can read every line of code, top-to-bottom, understand
     what your configuration is doing, and modify it to suit your needs.
-
     Once you've done that, you can start exploring, configuring and tinkering to
     make Neovim your own! That might mean leaving Kickstart just the way it is for a while
     or immediately breaking it into modular pieces. It's up to you!
@@ -125,6 +124,9 @@ vim.api.nvim_set_keymap("i", "<C-l>", "<Right>", { noremap = true })
 vim.api.nvim_set_keymap("i", "<C-j>", "<C-o>gj", { noremap = true })
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 -- Save undo history
+-- copilot
+vim.keymap.set("n", "<leader>dc", "<cmd>Copilot disable<CR>") --leader + disable copilot
+vim.keymap.set("n", "<leader>ec", "<cmd>Copilot enable<CR>") --leader + enable copilot
 vim.opt.undofile = true
 vim.opt.swapfile = false
 vim.opt.backup = false
@@ -161,6 +163,12 @@ vim.opt.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
+
+--NOTE: trying
+vim.opt.tabstop = 2
+vim.opt.softtabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.expandtab = true
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -587,6 +595,7 @@ require("lazy").setup({
 				ast_grep = {},
 				gopls = {},
 				-- html = {},
+				actionlint = {},
 				jsonls = {},
 				pyright = {},
 				rust_analyzer = {},
@@ -597,6 +606,7 @@ require("lazy").setup({
 				--
 				-- But for many setups, the LSP (`tsserver`) will work just fine
 				tsserver = {},
+				docker_compose_language_service = {},
 				--
 
 				lua_ls = {
