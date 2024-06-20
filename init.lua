@@ -99,12 +99,13 @@ vim.g.have_nerd_font = true
 
 -- Make line numbers default
 vim.opt.relativenumber = true
+vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
 -- vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
-vim.opt.mouse = "a"
+vim.opt.mouse = "n"
 
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
@@ -127,6 +128,7 @@ vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 -- copilot
 vim.keymap.set("n", "<leader>dc", "<cmd>Copilot disable<CR>") --leader + disable copilot
 vim.keymap.set("n", "<leader>ec", "<cmd>Copilot enable<CR>") --leader + enable copilot
+
 vim.opt.undofile = true
 vim.opt.swapfile = false
 vim.opt.backup = false
@@ -165,6 +167,7 @@ vim.opt.cursorline = true
 vim.opt.scrolloff = 10
 
 --NOTE: trying
+--NOTE: indentation settings
 vim.opt.tabstop = 2
 vim.opt.softtabstop = 2
 vim.opt.shiftwidth = 2
@@ -184,10 +187,14 @@ vim.keymap.set("n", "<C-l>", "<cmd> TmuxNavigateRight<CR>")
 vim.keymap.set("n", "<C-j>", "<cmd> TmuxNavigateDown<CR>")
 vim.keymap.set("n", "<C-k>", "<cmd> TmuxNavigateUp<CR>")
 
+--NOTE: Hightlight move
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
+
 -- Diagnostic keymaps
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous [D]iagnostic message" })
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next [D]iagnostic message" })
-vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagnostic [E]rror messages" })
+vim.keymap.set("n", "<leader>b", vim.diagnostic.open_float, { desc = "Show diagnostic [E]rror messages" })
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
@@ -408,8 +415,8 @@ require("lazy").setup({
 			vim.keymap.set("n", "<leader>/", function()
 				-- You can pass additional configuration to Telescope to change the theme, layout, etc.
 				builtin.current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
-					winblend = 10,
-					previewer = false,
+					winblend = 30,
+					previewer = true,
 				}))
 			end, { desc = "[/] Fuzzily search in current buffer" })
 
@@ -766,7 +773,7 @@ require("lazy").setup({
 
 					-- If you prefer more traditional completion keymaps,
 					-- you can uncomment the following lines
-					["<CR>"] = cmp.mapping.confirm({ select = true }),
+					--["<CR>"] = cmp.mapping.confirm({ select = true }),
 					--['<Tab>'] = cmp.mapping.select_next_item(),
 					--['<S-Tab>'] = cmp.mapping.select_prev_item(),
 
@@ -811,17 +818,38 @@ require("lazy").setup({
 		-- change the command in the config to whatever the name of that colorscheme is.
 		--
 		-- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
+		-- Background and colorscheme Transparency transparency
 		"folke/tokyonight.nvim",
 		priority = 1000, -- Make sure to load this before all the other start plugins.
 		init = function()
+			require("tokyonight").setup({
+				-- use the night style
+				style = "night",
+				transparent = false,
+				-- disable italic for functions
+				styles = {
+					functions = {},
+				},
+				vim.api.nvim_set_hl(1, "Normal", { bg = "black" }),
+				vim.api.nvim_set_hl(1, "NormalFloat", { bg = "black" }),
+				sidebars = { "qf", "vista_kind", "terminal", "packer" },
+				-- Change the "hint" color to the "orange" color, and make the "error" color bright red
+				on_colors = function(colors)
+					colors.bg = "#000000"
+					colors.comment = "#7E8E91"
+				end,
+			})
 			-- Load the colorscheme here.
 			-- Like many other themes, this one has different styles, and you could load
 			-- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-			vim.cmd.colorscheme("tokyonight-moon")
-			vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
-			vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
-			-- You can configure highlights by doing something like:
-			vim.cmd.hi("Comment gui=none")
+			-- vim.cmd.colorscheme("tokyonight-moon")
+			vim.cmd.colorscheme("tokyonight-night")
+			vim.api.nvim_set_hl(0, "Normal", { bg = "black" })
+			vim.api.nvim_set_hl(0, "NormalFloat", { bg = "black" })
+			-- vim.api.nvim_set_hl(0, "Normal", { bg = "black" })
+			-- vim.api.nvim_set_hl(0, "NormalFloat", { bg = "black" })
+			-- -- You can configure highlights by doing something like:
+			-- vim.cmd.hi("Comment gui=none")
 		end,
 	},
 
@@ -839,7 +867,7 @@ require("lazy").setup({
 		config = function()
 			require("copilot").setup({
 				panel = {
-					enabled = true,
+					enabled = false,
 					auto_refresh = true,
 					keymap = {
 						jump_prev = "[[",
@@ -854,7 +882,7 @@ require("lazy").setup({
 					},
 				},
 				suggestion = {
-					enabled = true,
+					enabled = false,
 					auto_trigger = true,
 					debounce = 75,
 					keymap = {
@@ -880,6 +908,78 @@ require("lazy").setup({
 				copilot_node_command = "node", -- Node.js version must be > 18.x
 				server_opts_overrides = {},
 			})
+		end,
+	},
+	{ --harpoon2
+		"ThePrimeagen/harpoon",
+		branch = "harpoon2",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		config = function()
+			local harpoon = require("harpoon")
+			-- harpoon:setup()
+			local conf = require("telescope.config").values
+			local function toggle_telescope(harpoon_files)
+				local file_paths = {}
+				for _, item in ipairs(harpoon_files.items) do
+					table.insert(file_paths, item.value)
+				end
+
+				require("telescope.pickers")
+					.new({}, {
+						prompt_title = "Harpoon",
+						finder = require("telescope.finders").new_table({
+							results = file_paths,
+						}),
+						previewer = conf.file_previewer({}),
+						sorter = conf.generic_sorter({}),
+					})
+					:find()
+			end
+			vim.keymap.set("n", "<leader>a", function()
+				harpoon:list():add()
+			end)
+			vim.keymap.set("n", "<C-e>", function()
+				harpoon.ui:toggle_quick_menu(harpoon:list())
+			end)
+			vim.keymap.set("n", "<a-e>", function()
+				toggle_telescope(harpoon:list())
+			end, { desc = "Open harpoon window" })
+
+			vim.keymap.set("n", "<a-1>", function()
+				harpoon:list():select(1)
+			end)
+			vim.keymap.set("n", "<a-2>", function()
+				harpoon:list():select(2)
+			end)
+			vim.keymap.set("n", "<a-3>", function()
+				harpoon:list():select(3)
+			end)
+			vim.keymap.set("n", "<a-4>", function()
+				harpoon:list():select(4)
+			end)
+			vim.keymap.set("n", "<a-5>", function()
+				harpoon:list():select(5)
+			end)
+			vim.keymap.set("n", "<a-6>", function()
+				harpoon:list():select(6)
+			end)
+			vim.keymap.set("n", "<a-7>", function()
+				harpoon:list():select(7)
+			end)
+			vim.keymap.set("n", "<a-8>", function()
+				harpoon:list():select(8)
+			end)
+			vim.keymap.set("n", "<a-9>", function()
+				harpoon:list():select(9)
+			end)
+
+			-- Toggle previous & next buffers stored within Harpoon list
+			vim.keymap.set("n", "<C-S-P>", function()
+				harpoon:list():prev()
+			end)
+			vim.keymap.set("n", "<C-S-N>", function()
+				harpoon:list():next()
+			end)
 		end,
 	},
 
