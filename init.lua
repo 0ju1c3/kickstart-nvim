@@ -758,9 +758,9 @@ require("lazy").setup({
 				-- No, but seriously. Please read `:help ins-completion`, it is really good!
 				mapping = cmp.mapping.preset.insert({
 					-- Select the [n]ext item
-					["<C-n>"] = cmp.mapping.select_next_item(),
+					-- ["<C-n>"] = cmp.mapping.select_next_item(),
 					-- Select the [p]revious item
-					["<C-p>"] = cmp.mapping.select_prev_item(),
+					-- ["<C-p>"] = cmp.mapping.select_prev_item(),
 
 					-- Scroll the documentation window [b]ack / [f]orward
 					["<C-b>"] = cmp.mapping.scroll_docs(-4),
@@ -774,8 +774,8 @@ require("lazy").setup({
 					-- If you prefer more traditional completion keymaps,
 					-- you can uncomment the following lines
 					--["<CR>"] = cmp.mapping.confirm({ select = true }),
-					--['<Tab>'] = cmp.mapping.select_next_item(),
-					--['<S-Tab>'] = cmp.mapping.select_prev_item(),
+					["<Tab>"] = cmp.mapping.select_next_item(),
+					["<S-Tab>"] = cmp.mapping.select_prev_item(),
 
 					-- Manually trigger a completion from nvim-cmp.
 					--  Generally you don't need this, because nvim-cmp will display
@@ -937,14 +937,13 @@ require("lazy").setup({
 			end
 			vim.keymap.set("n", "<leader>a", function()
 				harpoon:list():add()
-			end)
+			end, { desc = "Add file to harpoon" })
 			vim.keymap.set("n", "<C-e>", function()
 				harpoon.ui:toggle_quick_menu(harpoon:list())
-			end)
+			end, { desc = "Open harpoon window" })
 			vim.keymap.set("n", "<a-e>", function()
 				toggle_telescope(harpoon:list())
-			end, { desc = "Open harpoon window" })
-
+			end, { desc = "Open telescope-harpoon window" })
 			vim.keymap.set("n", "<a-1>", function()
 				harpoon:list():select(1)
 			end)
@@ -1000,11 +999,11 @@ require("lazy").setup({
 				"                                                     ",
 			}
 			dashboard.section.buttons.val = {
-				dashboard.button("e", "  > New file", ":ene <BAR> startinsert <CR>"),
-				dashboard.button("f", "  > Find file", ":cd $HOME/Workspace | Telescope find_files<CR>"),
+				dashboard.button("e", "📄 > New file", ":ene <BAR> startinsert <CR>"),
+				dashboard.button("f", "🔎 > Find file", ":cd $HOME/ojuice/dev | Telescope find_files<CR>"),
 				dashboard.button("r", "  > Recent", ":Telescope oldfiles<CR>"),
 				dashboard.button("s", "  > Settings", ":e $MYVIMRC | :cd %:p:h | split . | wincmd k | pwd<CR>"),
-				dashboard.button("q", "  > Quit NVIM", ":qa<CR>"),
+				dashboard.button("q", "⛔ > Quit NVIM", ":qa<CR>"),
 			}
 			alpha.setup(dashboard.opts)
 		end,
