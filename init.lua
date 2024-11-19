@@ -168,11 +168,18 @@ vim.opt.scrolloff = 10
 
 --NOTE: trying
 --NOTE: indentation settings
-vim.opt.tabstop = 2
-vim.opt.softtabstop = 2
-vim.opt.shiftwidth = 2
+vim.opt.tabstop = 4
+vim.opt.softtabstop = 4
+vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 
+-- Enable filetype detection, plugins, and indentation
+vim.cmd([[filetype plugin indent on]])
+
+-- Set tab settings for Lua development
+vim.opt.tabstop = 4 -- Number of spaces that a <Tab> counts for
+vim.opt.shiftwidth = 4 -- Number of spaces to use for auto-indent
+vim.opt.expandtab = true -- Convert tabs to spaces
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -598,7 +605,7 @@ require("lazy").setup({
 			--  - settings (table): Override the default settings passed when initializing the server.
 			--        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
 			local servers = {
-				-- clangd = {},
+				clangd = {},
 				ast_grep = {},
 				gopls = {},
 				-- html = {},
@@ -694,6 +701,7 @@ require("lazy").setup({
 				css = { "prettier" },
 				-- Conform can also run multiple formatters sequentially
 				python = { "isort", "black" },
+				cpp = { "clangd-format" },
 				--
 				-- You can use a sub-list to tell conform to run *until* a formatter
 				-- is found.
@@ -808,6 +816,7 @@ require("lazy").setup({
 					{ name = "nvim_lsp" },
 					{ name = "luasnip" },
 					{ name = "path" },
+					{ name = "buffer" },
 				},
 			})
 		end,
@@ -1050,7 +1059,7 @@ require("lazy").setup({
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
 		opts = {
-			ensure_installed = { "bash", "c", "html", "lua", "luadoc", "markdown", "vim", "vimdoc" },
+			ensure_installed = { "bash", "c", "html", "lua", "luadoc", "markdown", "vim", "vimdoc", "cpp" },
 			-- Autoinstall languages that are not installed
 			auto_install = true,
 			highlight = {
