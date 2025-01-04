@@ -881,7 +881,7 @@ require("lazy").setup({
 					keymap = {
 						jump_prev = "[[",
 						jump_next = "]]",
-						accept = "<M-l>",
+						accept = "<M-y>",
 						refresh = "gr",
 						open = "<M-CR>",
 					},
@@ -891,7 +891,7 @@ require("lazy").setup({
 					},
 				},
 				suggestion = {
-					enabled = false,
+					enabled = true,
 					auto_trigger = true,
 					debounce = 75,
 					keymap = {
