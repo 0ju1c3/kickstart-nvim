@@ -834,7 +834,7 @@ require("lazy").setup({
 			require("tokyonight").setup({
 				-- use the night style
 				style = "night",
-				transparent = false,
+				transparent = true,
 				-- disable italic for functions
 				styles = {
 					functions = {},
@@ -853,7 +853,7 @@ require("lazy").setup({
 			-- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
 			-- vim.cmd.colorscheme("tokyonight-moon")
 			vim.cmd.colorscheme("tokyonight-night")
-			vim.api.nvim_set_hl(0, "Normal", { bg = "black" })
+			vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
 			vim.api.nvim_set_hl(0, "NormalFloat", { bg = "black" })
 			-- vim.api.nvim_set_hl(0, "Normal", { bg = "black" })
 			-- vim.api.nvim_set_hl(0, "NormalFloat", { bg = "black" })
