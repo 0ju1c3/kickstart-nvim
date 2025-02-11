@@ -123,11 +123,14 @@ vim.api.nvim_set_keymap("i", "<C-k>", "<C-o>gk", { noremap = true })
 vim.api.nvim_set_keymap("i", "<C-h>", "<Left>", { noremap = true })
 vim.api.nvim_set_keymap("i", "<C-l>", "<Right>", { noremap = true })
 vim.api.nvim_set_keymap("i", "<C-j>", "<C-o>gj", { noremap = true })
-vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
+-- vim.keymap.set("n", "<leader>pv", vim.cmd.Ex) ; disabled default file tree
 -- Save undo history
 -- copilot
 vim.keymap.set("n", "<leader>dc", "<cmd>Copilot disable<CR>") --leader + disable copilot
 vim.keymap.set("n", "<leader>ec", "<cmd>Copilot enable<CR>") --leader + enable copilot
+
+-- neotree
+vim.keymap.set("n", "<leader>pv", "<cmd>:Neotree toggle source=filesystem reveal=true position=left<CR>")
 
 vim.opt.undofile = true
 vim.opt.swapfile = false
@@ -1085,6 +1088,28 @@ require("lazy").setup({
 			--    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
 			--    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
 			--    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+		end,
+	},
+	{
+		"nvim-neo-tree/neo-tree.nvim",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"nvim-tree/nvim-web-devicons",
+			"MunifTanjim/nui.nvim",
+		},
+		config = function()
+			require("neo-tree").setup({
+				sources = { "filesystem", "buffers", "git_status", "diagnostics" },
+				diagnostics = {
+					enabled = true,
+					icons = {
+						hint = "💡",
+						info = "ℹ️",
+						warn = "⚠️",
+						error = "🔥",
+					},
+				},
+			})
 		end,
 	},
 	{
